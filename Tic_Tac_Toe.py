@@ -53,8 +53,6 @@ board = {'7': ' ', '8': ' ', '9': ' ',
 
 sample_keypad = {'7': '7', '8': '8', '9': '9', '4': '4', '5': '5', '6': '6','1': '1', '2': '2', '3': '3'}
 
-
-
 def greeting(player_name):
     if player_name.capitalize() in all_players:
         return 'Welcome Back!'
@@ -66,10 +64,7 @@ def greeting(player_name):
         except:
             return 'New player! Welcome!'
 
-
-
 board_keys = board.keys()
-
 
 
 def printBoard(board_sample):
@@ -81,7 +76,6 @@ def printBoard(board_sample):
     return ''
 
 
-
 def Tic_Tac_Toe():
     print('\nTic Tac Toe\n  By C**C\n')
     time.sleep(1)
@@ -90,49 +84,38 @@ def Tic_Tac_Toe():
     players = []
     player1 = input('Hey you, Player 1!  Enter your name: ')
     players.append(player1)
-    
     print(greeting(player1))
-    
     
     player2 = input('And you, Player 2! Enter your name: ')
     players.append(player2)
-
     print(greeting(player2))
 
     cursor.execute('update total_plays set count = count + 1')
     conn.commit()
-    
     time.sleep(1)
     
     print(player1 + ' vs. ' + player2 + '\n')
-    
     time.sleep(1)
+    
     print('This game will randomly choose a player to start the game.\n')
-    
     time.sleep(2)
-    
     
     turn = random.choice(players)
     current_turn = turn
     print(current_turn + ' will go first!' + '\n')
-    
     time.sleep(1)
     
     print('Instruction: ' + '\n' + 'How to put the mark on the grid?' + '\n')
     print(printBoard(board))
-    
     time.sleep(2)
     
     print('Think of the grid as a keypad, like this\n')
-    
     time.sleep(1)
     
     print(printBoard(sample_keypad))
-    
     time.sleep(2)
     
     print('Simply type the number that coordinates the square.\n')
-    
     time.sleep(2)
 
     winning_count = input('''\nNow, let\'s choose the winning path.\n\nWho will be the winner?\n
@@ -147,7 +130,6 @@ def Tic_Tac_Toe():
     player2_winning = 0
     
     print('Ready, Set, Go!\n')
-
     
     while winning_count not in ( player1_winning, player2_winning):
         count = 0
@@ -164,7 +146,6 @@ def Tic_Tac_Toe():
                 time.sleep(1)
                 inputs= input('Which number do you choose this time?\n')
         
-       
             if count % 2:
                 board[inputs] = 'O'
                 count += 1
@@ -172,7 +153,6 @@ def Tic_Tac_Toe():
                     current_turn = player2
                 else: 
                     current_turn = player1
-            
             else:
                 board[inputs] = 'X'
                 count += 1
@@ -456,7 +436,6 @@ def Tic_Tac_Toe():
                     break
                 
         
-        
         if game_over and winning_count not in ( player1_winning, player2_winning):       
             game_over = False
             count = 0
@@ -488,7 +467,6 @@ def Tic_Tac_Toe():
     conn.close()
     time.sleep(2)
     
-
 
 if __name__ == '__main__':
     Tic_Tac_Toe()
