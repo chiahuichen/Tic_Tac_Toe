@@ -1,18 +1,45 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding: utf-8
-import sqlite3
-conn = sqlite3.connect('tic_tac_toe.db')
-cursor = conn.cursor()
-cursor.execute('select * from total_plays')
-total_plays = cursor.fetchone()[0]
 
-cursor.execute('select name from players')
-all_players = []
-for name in cursor.fetchall():
-    all_players.append(name[0])
-    
-cursor.execute('select * from total_plays')
-total_plays = cursor.fetchone()[0]
+import sqlite3
+import random
+import time
+import os
+import glob
+
+# connect to sqlite database
+# check if db already exists
+if glob.glob('**/tic_tac_toe.db', recursive = True):
+    conn = sqlite3.connect('tic_tac_toe.db')
+    cursor = conn.cursor()
+else: # if not, create a db and 2 tables
+    os.system('touch tic_tac_toe.db')
+    conn = sqlite3.connect('tic_tac_toe.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        'CREATE TABLE players (id integer primary key autoincrement, name varchar(255) not null, win integer default 0, lose integer default 0, tie integer default 0)'
+        )
+    cursor.execute(
+        'CREATE TABLE total_plays (count integer default 0)'
+        )
+
+# fetch data from database if exists already    
+try:
+    cursor.execute('select * from total_plays')
+    total_plays = cursor.fetchone()[0]
+
+    cursor.execute('select name from players')
+    all_players = []
+    for name in cursor.fetchall():
+        all_players.append(name[0])
+        
+    cursor.execute('select * from total_plays')
+    total_plays = cursor.fetchone()[0]
+except: # database just created and has no data
+    total_plays = 0
+    all_players = []
+    pass
+
 
 def db_update(win, lose):
     cursor.execute('update players set win= win + 1 where name = "' + win + '"' )
@@ -22,9 +49,10 @@ def db_update(win, lose):
    
 board = {'7': ' ', '8': ' ', '9': ' ',
         '4': ' ', '5': ' ', '6': ' ',
-        '1': ' ', '2': ' ', '3': ' ',}
+        '1': ' ', '2': ' ', '3': ' '}
 
 sample_keypad = {'7': '7', '8': '8', '9': '9', '4': '4', '5': '5', '6': '6','1': '1', '2': '2', '3': '3'}
+
 
 
 def greeting(player_name):
@@ -39,81 +67,26 @@ def greeting(player_name):
             return 'New player! Welcome!'
 
 
+
+board_keys = board.keys()
+
+
+
 def printBoard(board_sample):
     print(board_sample['7'] + '|' + board_sample['8'] + '|' + board_sample['9'] ) 
     print('-+-+-')
     print(board_sample['4'] + '|' + board_sample['5'] + '|' + board_sample['6'] )
     print('-+-+-')
     print(board_sample['1'] + '|' + board_sample['2'] + '|' + board_sample['3'] )
-
     return ''
 
 
-# In[1]:
+
 def Tic_Tac_Toe():
-
-    import sqlite3
-    conn = sqlite3.connect('tic_tac_toe.db')
-    cursor = conn.cursor()
-    cursor.execute('select * from total_plays')
-    total_plays = cursor.fetchone()[0]
-
-    cursor.execute('select name from players')
-    all_players = []
-    for name in cursor.fetchall():
-        all_players.append(name[0])
-    
-    cursor.execute('select * from total_plays')
-    total_plays = cursor.fetchone()[0]
-
-    def db_update(win, lose):
-        cursor.execute('update players set win= win + 1 where name = "' + win + '"' )
-        cursor.execute('update players set lose = lose + 1 where name = "' + lose + '"' )
-        conn.commit()
-        return 
-   
-    board = {'7': ' ', '8': ' ', '9': ' ',
-        '4': ' ', '5': ' ', '6': ' ',
-        '1': ' ', '2': ' ', '3': ' ',}
-
-    sample_keypad = {'7': '7', '8': '8', '9': '9', '4': '4', '5': '5', '6': '6','1': '1', '2': '2', '3': '3'}
-
-
-    def greeting(player_name):
-        if player_name.capitalize() in all_players:
-            return 'Welcome Back!'
-        else:
-            try:
-                cursor.execute('insert into players (name) values ("' + player_name.capitalize() + '")')
-                conn.commit()
-                return 'New player! Welcome!!'
-            except:
-                return 'New player! Welcome!'
-
-
-
-
-# In[2]:
-
-
-    def printBoard(board_sample):
-        print(board_sample['7'] + '|' + board_sample['8'] + '|' + board_sample['9'] ) 
-        print('-+-+-')
-        print(board_sample['4'] + '|' + board_sample['5'] + '|' + board_sample['6'] )
-        print('-+-+-')
-        print(board_sample['1'] + '|' + board_sample['2'] + '|' + board_sample['3'] )
-
-        return ''
-
-
-# In[3]:
-
-    import random
-    import time
-    
     print('\nTic Tac Toe\n  By C**C\n')
     time.sleep(1)
-    print('Total play count of this game is ' + str(total_plays) + '!\n') 
+    if total_plays != 0:
+        print('Total play count of this game is ' + str(total_plays) + '!\n') 
     players = []
     player1 = input('Hey you, Player 1!  Enter your name: ')
     players.append(player1)
@@ -181,7 +154,7 @@ def Tic_Tac_Toe():
         game_over = False
     
         for i in range(9):       
-            print(printBoard(board))
+            print(printBoard(board) + '\n')
             print(current_turn + ', your turn now.\n')
             inputs= input('Which number do you choose?\n')
             time.sleep(1)
@@ -515,17 +488,8 @@ def Tic_Tac_Toe():
     conn.close()
     time.sleep(2)
     
-    
 
 
-
-# In[4]:
-
-
-
-if __name__ == '__main__': # available to run as a script, not import as a module
+if __name__ == '__main__':
     Tic_Tac_Toe()
     
-
-
-
