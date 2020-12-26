@@ -334,7 +334,7 @@ if __name__ == '__main__':
             print('It\'s a tie!\nGood Game Guys!\n')
             time.sleep(1)
             for player in t.players:
-                t.cursor.execute('update players set tie = tie + 1 where name = "' + t.player.capitalize() + '"')
+                t.cursor.execute('update players set tie = tie + 1 where name = "' + player.capitalize() + '"')
                 t.conn.commit()
             for key in t.board.keys():
                 t.board[key] = ' '
@@ -351,4 +351,7 @@ if __name__ == '__main__':
     t.cursor.close()
     t.conn.close()
     time.sleep(2)
+    
+
+    
     
