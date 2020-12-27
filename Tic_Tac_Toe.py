@@ -9,10 +9,10 @@ import glob
 
 class Tic_Tac_Toe:
     def __init__(self):
-        # connect to sqlite database
-        # check if db already exists
+        # check if tic_tac_toe.db exists
         self.db = glob.glob('tic_tac_toe.db', recursive = True)
-        if self.db:
+        if self.db: 
+            # connect to sqlite database
             self.conn = sqlite3.connect(self.db[0])
             self.cursor = self.conn.cursor()
 
@@ -50,7 +50,6 @@ class Tic_Tac_Toe:
         self.board_keys = self.board.keys()
 
 
-
     def printBoard(self, board_sample):
         print(board_sample['7'] + '|' + board_sample['8'] + '|' + board_sample['9'] ) 
         print('-+-+-')
@@ -60,7 +59,6 @@ class Tic_Tac_Toe:
         return ''
 
 
-
     def db_update(self, win, lose):
         self.cursor.execute('update players set win= win + 1 where name = "' + win + '"' )
         self.cursor.execute('update players set lose = lose + 1 where name = "' + lose + '"' )
@@ -68,7 +66,6 @@ class Tic_Tac_Toe:
         return
 
 
-    
     def greeting(self, player_name):
         if player_name.capitalize() in self.all_players:
             return 'Welcome Back!'
@@ -79,7 +76,6 @@ class Tic_Tac_Toe:
                 return 'New player! Welcome!!'
             except:
                 return 'New player! Welcome!'
-
 
 
 
@@ -94,47 +90,37 @@ if __name__ == '__main__':
     t.player1 = input('Hey you, Player 1!  Enter your name: ')
     t.players.append(t.player1)
     print(t.greeting(t.player1))
-    
-    
+     
     t.player2 = input('And you, Player 2! Enter your name: ')
     t.players.append(t.player2)
     print(t.greeting(t.player2))
 
     t.cursor.execute('update total_plays set count = count + 1')
     t.conn.commit()
-
-    
     time.sleep(1)
     
     print(t.player1 + ' vs. ' + t.player2 + '\n')
-    
     time.sleep(1)
+    
     print('This game will randomly choose a player to start the game.\n')
-    
     time.sleep(2)
-    
     
     t.turn = random.choice(t.players)
     t.current_turn = t.turn
     print(t.current_turn + ' will go first!' + '\n')
-    
     time.sleep(1)
     
     print('Instruction: ' + '\n' + 'How to put the mark on the grid?' + '\n')
     print(t.printBoard(t.board))
-    
     time.sleep(2)
     
     print('Think of the grid as a keypad, like this\n')
-    
     time.sleep(1)
     
     print(t.printBoard(t.sample_keypad))
-    
     time.sleep(2)
     
     print('Simply type the number that coordinates the square.\n')
-    
     time.sleep(2)
 
     t.winning_count = input('''\nNow, let\'s choose the winning path.\n\nWho will be the winner?\n
@@ -324,7 +310,7 @@ if __name__ == '__main__':
         if t.game_over and t.winning_count not in (t.player1_winning, t.player2_winning):       
             t.game_over = False
             t.count = 0
-            t.current_turn = t.winner
+            t.current_turn = t.loser    # t.loser plays first next round
             for key in t.board.keys():
                 t.board[key] = ' '
             print('Next battle.\nHere we go!\n')
