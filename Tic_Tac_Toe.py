@@ -9,10 +9,10 @@ import glob
 
 class Tic_Tac_Toe:
     def __init__(self):
-        # check if tic_tac_toe.db exists
+        # connect to sqlite database
+        # check if db already exists
         self.db = glob.glob('tic_tac_toe.db', recursive = True)
-        if self.db: 
-            # connect to sqlite database
+        if self.db:
             self.conn = sqlite3.connect(self.db[0])
             self.cursor = self.conn.cursor()
 
@@ -59,13 +59,6 @@ class Tic_Tac_Toe:
         return ''
 
 
-    def db_update(self, win, lose):
-        self.cursor.execute('update players set win= win + 1 where name = "' + win + '"' )
-        self.cursor.execute('update players set lose = lose + 1 where name = "' + lose + '"' )
-        self.conn.commit()
-        return
-
-
     def greeting(self, player_name):
         if player_name.capitalize() in self.all_players:
             return 'Welcome Back!'
@@ -76,6 +69,15 @@ class Tic_Tac_Toe:
                 return 'New player! Welcome!!'
             except:
                 return 'New player! Welcome!'
+
+
+    def db_update(self, win, lose):
+        self.cursor.execute('update players set win= win + 1 where name = "' + win + '"' )
+        self.cursor.execute('update players set lose = lose + 1 where name = "' + lose + '"' )
+        self.conn.commit()
+        return
+
+
 
 
 
@@ -90,37 +92,44 @@ if __name__ == '__main__':
     t.player1 = input('Hey you, Player 1!  Enter your name: ')
     t.players.append(t.player1)
     print(t.greeting(t.player1))
-     
+    
+    
     t.player2 = input('And you, Player 2! Enter your name: ')
     t.players.append(t.player2)
     print(t.greeting(t.player2))
 
-    t.cursor.execute('update total_plays set count = count + 1')
-    t.conn.commit()
+    
     time.sleep(1)
     
     print(t.player1 + ' vs. ' + t.player2 + '\n')
-    time.sleep(1)
     
+    time.sleep(1)
     print('This game will randomly choose a player to start the game.\n')
+    
     time.sleep(2)
+    
     
     t.turn = random.choice(t.players)
     t.current_turn = t.turn
     print(t.current_turn + ' will go first!' + '\n')
+    
     time.sleep(1)
     
     print('Instruction: ' + '\n' + 'How to put the mark on the grid?' + '\n')
     print(t.printBoard(t.board))
+    
     time.sleep(2)
     
     print('Think of the grid as a keypad, like this\n')
+    
     time.sleep(1)
     
     print(t.printBoard(t.sample_keypad))
+    
     time.sleep(2)
     
     print('Simply type the number that coordinates the square.\n')
+    
     time.sleep(2)
 
     t.winning_count = input('''\nNow, let\'s choose the winning path.\n\nWho will be the winner?\n
@@ -169,7 +178,15 @@ if __name__ == '__main__':
                     t.current_turn = t.player1
                         
             if t.count >= 5:
-                if t.board['7'] == t.board['8'] == t.board['9'] == 'X' or t.board['7'] == t.board['8'] == t.board['9'] == 'O':
+                if (t.board['7'] == t.board['8'] == t.board['9'] == ('X' or  'O')) or (
+                    t.board['4'] == t.board['5'] == t.board['6'] == ('X' or  'O')) or (
+                        t.board['1'] == t.board['2'] == t.board['3'] == ('X' or  'O')) or (
+                            t.board['1'] == t.board['4'] == t.board['7'] == ('X' or  'O')) or (
+                                t.board['2'] == t.board['5'] == t.board['8'] == ('X' or  'O')) or (
+                                    t.board['3'] == t.board['6'] == t.board['9'] == ('X' or  'O')) or (
+                                        t.board['7'] == t.board['5'] == t.board['3'] == ('X' or  'O')) or (
+                                            t.board['9'] == t.board['5'] == t.board['1'] == ('X' or  'O')):
+                    
                     print(t.printBoard(t.board))
                     t.game_over = True
                     if t.current_turn == t.player1:
@@ -180,137 +197,17 @@ if __name__ == '__main__':
                         t.winner = t.player1
                         t.loser = t.player2
                         t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
+                    print('Excellent match.\n' + t.winner + ' wins this set!\n')
                     time.sleep(1)
                     print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
                     t.db_update(t.winner.capitalize(), t.loser.capitalize())
                     time.sleep(2)
                     break
-                elif t.board['4'] == t.board['5'] == t.board['6'] == 'X' or t.board['4'] == t.board['5'] == t.board['6'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break
-                elif t.board['1'] == t.board['2'] == t.board['3'] == 'X'or t.board['1'] == t.board['2'] == t.board['3'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break
-                elif t.board['1'] == t.board['4'] == t.board['7'] == 'X' or t.board['1'] == t.board['4'] == t.board['7'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break
-                elif t.board['2'] == t.board['5'] == t.board['8'] == 'X' or t.board['2'] == t.board['5'] == t.board['8'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break
-                elif t.board['3'] == t.board['6'] == t.board['9'] == 'X' or t.board['3'] == t.board['6'] == t.board['9'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break
-                elif t.board['7'] == t.board['5'] == t.board['3'] == 'X' or t.board['7'] == t.board['5'] == t.board['3'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break
-                elif t.board['9'] == t.board['5'] == t.board['1'] == 'X' or t.board['9'] == t.board['5'] == t.board['1'] == 'O':
-                    print(t.printBoard(t.board))
-                    t.game_over = True
-                    if t.current_turn == t.player1:
-                        t.winner = t.player2
-                        t.loser = t.player1
-                        t.player2_winning +=1
-                    else:
-                        t.winner = t.player1
-                        t.loser = t.player2
-                        t.player1_winning +=1
-                    print('Excellent match.\n' + t.winner + ' is the winner!!!\n')
-                    time.sleep(1)
-                    print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
-                    t.db_update(t.winner.capitalize(), t.loser.capitalize())
-                    time.sleep(2)
-                    break  
-        
         
         if t.game_over and t.winning_count not in (t.player1_winning, t.player2_winning):       
             t.game_over = False
             t.count = 0
-            t.current_turn = t.loser    # t.loser plays first next round
+            t.current_turn = t.loser
             for key in t.board.keys():
                 t.board[key] = ' '
             print('Next battle.\nHere we go!\n')
@@ -327,17 +224,17 @@ if __name__ == '__main__':
             print('Current Game Status:\n' + t.player1 + ' vs. ' + t.player2 + '\n' + str(t.player1_winning) + ' : ' + str(t.player2_winning) + '\n')
             print('Next battle.\nHere we go!\n')
             t.count = 0
+        t.cursor.execute('update total_plays set count = count + 1')
+        t.conn.commit()
             
                   
     if t.winning_count == t.player1_winning:
-        print('Congratulations! '+ t.player1.upper() + ' is the champ!' )
+        print('Congratulations! '+ t.player1.upper() + ' is the winner!' )
     else:
-        print('Congratulations! '+ t.player2.upper() + ' is the champ!' )
+        print('Congratulations! '+ t.player2.upper() + ' is the winner!' )
 
     t.cursor.close()
     t.conn.close()
     time.sleep(2)
-    
-
     
     
