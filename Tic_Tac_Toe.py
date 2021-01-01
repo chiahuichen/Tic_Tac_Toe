@@ -201,7 +201,6 @@ if __name__ == '__main__':
             else: 
                 t.current_turn = t.player1           
             if t.count >= 5:
-                print('pass')
                 if (t.board['7'] == t.board['8'] == t.board['9'] and t.board['9'] in ('X','O')) or (
                     t.board['4'] == t.board['5'] == t.board['6']and t.board['6'] in ('X','O')) or (
                         t.board['1'] == t.board['2'] == t.board['3'] and t.board['3'] in ('X','O')) or (
