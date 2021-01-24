@@ -9,6 +9,7 @@ from collections import deque
 
 class Tic_Tac_Toe:
     def __init__(self):
+        # establish SQLite API
         # connect to sqlite database
         # check if db already exists
         self.db = glob.glob('tic_tac_toe.db', recursive=True)
